@@ -5,14 +5,6 @@ from pathlib import Path
 from subprocess import run
 
 
-"""
-Goals
-- Only download the image if I don't already have it
-- Be able to see the description of the image
-- Know the images for the previous days
-"""
-
-
 class ImageListing:
     """
     The NASA Picture Of the Day URL is different for each day.
@@ -29,7 +21,10 @@ class ImageListing:
         self.explanation = json.get("explanation", "")
         self.media_type = json.get("media_type", "")
         self.title = json.get("title", "")
-        self.url = json.get("hdurl", "")
+        self.url = json.get(
+            "hdurl",
+            json.get("url", ""),
+        )
 
     @property
     def is_image(self) -> bool:
@@ -112,14 +107,15 @@ def main(api_key: str = None):
 
         # Get the image data from NASA and save to disk
         img_data = get_image(img_listing)
-        img_file_extension = "." + img_listing.url.split(".")[-1]
-        (img_save_location / "image").with_suffix(
+        img_file_extension = "." + img_listing.save_name.split(".")[-1]
+        img_save_file_path = (img_save_location / "image").with_suffix(
             img_file_extension
-        ).write_bytes(img_data)
+        )
+        img_save_file_path.write_bytes(img_data)
         (img_save_location / "description.txt").write_text(
             f"{img_listing.title}\n\n{img_listing.explanation}\n"
         )
-        link_save_location.symlink_to(img_save_location / "image")
+        link_save_location.symlink_to(img_save_file_path)
     else:
         print("The image does not need to be downloaded")
 
