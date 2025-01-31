@@ -72,32 +72,33 @@ def main(api_key: str = None):
     # Sanity Checking
     # API key is required
     if api_key is None:
-        print("No API key provided")
+        print("!!! No API key provided !!!")
         exit(1)
     # Image Setting Script is required
     wallpaper_script = Path("./setWallpaper.sh").resolve()
     if not wallpaper_script.is_file():
-        print("Wallpaper setting script not found")
+        print("!!! Wallpaper setting script not found !!!")
         exit(1)
 
     # Get the image request from NASA
-    print("Getting daily-image listing")
+    print("- Getting daily-image listing")
     try:
         img_listing = get_image_listing(api_key)
     except Exception as e:
-        print(f"Failed to get image listing: {e}")
+        print(f"\t=> Failed to get image listing: {e}")
         exit(1)
     else:
-        print(f"\tTitle: {img_listing.title}")
+        print(f"\t=> Title: {img_listing.title}")
+        print(f"\t=> Description: {img_listing.explanation}")
 
     if not img_listing.is_image:
-        print("Not an image today")
+        print("\t=> Not an image today")
         exit(1)
 
     # Determine if there is a new image to get
     # Regretfully, the name of the directory that holds the image is the name
     # of the image file itself.
-    print("Downloading image")
+    print("- Downloading image")
     images_save_dir = Path("~/APOD").expanduser()
     links_save_dir = Path("~/Pictures/APOD").expanduser()
     img_save_location = images_save_dir / img_listing.save_name
@@ -117,10 +118,10 @@ def main(api_key: str = None):
         )
         link_save_location.symlink_to(img_save_file_path)
     else:
-        print("The image does not need to be downloaded")
+        print("\t=> The image does not need to be downloaded")
 
     # Make image into the wallpaper
-    print("Setting wallpaper")
+    print("- Setting wallpaper")
     run(
         [
             wallpaper_script,
