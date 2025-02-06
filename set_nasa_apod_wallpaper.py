@@ -85,7 +85,7 @@ def main(api_key: str = None):
     try:
         img_listing = get_image_listing(api_key)
     except Exception as e:
-        print(f"\t=> Failed to get image listing: {e}")
+        print(f"\t=> !!! Failed to get image listing: {e} !!!")
         exit(1)
     else:
         print(f"\t=> Title: {img_listing.title}")
