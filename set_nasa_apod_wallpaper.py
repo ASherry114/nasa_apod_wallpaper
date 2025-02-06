@@ -93,7 +93,7 @@ def main(api_key: str = None):
 
     if not img_listing.is_image:
         print("\t=> Not an image today")
-        exit(1)
+        exit(0)
 
     # Determine if there is a new image to get
     # Regretfully, the name of the directory that holds the image is the name
